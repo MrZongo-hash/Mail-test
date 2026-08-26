@@ -3,49 +3,45 @@ import smtplib
 
 
 SMTP_SERVER = "mx.freenet.de"
-SMTP_PORT = 587
+SMTP_PORT = 465
 
 sender = os.environ["FREENET_EMAIL"]
 password = os.environ["FREENET_PASSWORD"]
 recipient = os.environ["MAIL_TO"]
 
 
-print("Verbinde mit Freenet...")
+print("Verbinde mit Freenet SMTP über Port 465...")
 
-with smtplib.SMTP(
+with smtplib.SMTP_SSL(
     SMTP_SERVER,
     SMTP_PORT,
     timeout=30
 ) as server:
 
-    print("EHLO...")
-    server.ehlo()
-
-    print("STARTTLS...")
-    server.starttls()
-
-    print("EHLO nach TLS...")
-    server.ehlo()
+    print("SSL-Verbindung hergestellt.")
 
     print("Login...")
     server.login(sender, password)
 
     print("Login erfolgreich.")
 
-    print("Sende Testmail...")
-
-    result = server.sendmail(
-        sender,
-        [recipient],
-        f"""From: {sender}
+    message = f"""From: {sender}
 To: {recipient}
 Subject: STELLA Mail Test
 
 Dies ist eine Testmail des STELLA-Monitors.
+
+Der Versand über Freenet SMTP funktioniert.
 """
+
+    print("Sende Testmail...")
+
+    server.sendmail(
+        sender,
+        [recipient],
+        message
     )
 
-    print("sendmail Ergebnis:")
-    print(result)
+    print("E-Mail erfolgreich versendet.")
 
 print("FERTIG")
