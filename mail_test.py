@@ -1,5 +1,6 @@
 import os
 import smtplib
+from email.message import EmailMessage
 
 
 SMTP_SERVER = "mx.freenet.de"
@@ -25,22 +26,25 @@ with smtplib.SMTP_SSL(
 
     print("Login erfolgreich.")
 
-    message = f"""From: {sender}
-To: {recipient}
-Subject: STELLA Mail Test
+    msg = EmailMessage()
 
-Dies ist eine Testmail des STELLA-Monitors.
+    msg["From"] = sender
+    msg["To"] = recipient
+    msg["Subject"] = "STELLA Monitor – E-Mail-Test"
 
-Der Versand über Freenet SMTP funktioniert.
-"""
+    msg.set_content(
+        "Hallo,\n\n"
+        "dies ist eine Test-E-Mail für den "
+        "STELLA-NRW-Monitor.\n\n"
+        "Wenn diese Nachricht angekommen ist, "
+        "funktioniert der E-Mail-Versand über Freenet.\n\n"
+        "Viele Grüße\n"
+        "STELLA Monitor"
+    )
 
     print("Sende Testmail...")
 
-    server.sendmail(
-        sender,
-        [recipient],
-        message
-    )
+    server.send_message(msg)
 
     print("E-Mail erfolgreich versendet.")
 
