@@ -1,0 +1,27 @@
+name: Freenet Mail Test
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-mail:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Repository auschecken
+        uses: actions/checkout@v4
+
+      - name: Python einrichten
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: E-Mail testen
+        env:
+          FREENET_EMAIL: ${{ secrets.FREENET_EMAIL }}
+          FREENET_PASSWORD: ${{ secrets.FREENET_PASSWORD }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
+        run: python mail_test.py
